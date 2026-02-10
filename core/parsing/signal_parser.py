@@ -88,8 +88,8 @@ class SignalParser:
         返回:
             bool - 是否为SWAP
         """
-        tx_type = tx_data.get('type', 'UNKNOWN')
-        return "SWAP" in tx_type
+        tx_type = tx_data.get('type') or 'UNKNOWN'
+        return isinstance(tx_type, str) and "SWAP" in tx_type
     
     def _calculate_sol_change(self, native_transfers: list) -> float:
         """
@@ -137,13 +137,13 @@ class SignalParser:
             if transfer.get('toUserAccount') == self.target_wallet:
                 # 收到 Token -> 买入
                 target_token_mint = mint
-                token_change = transfer.get('tokenAmount', 0)
-                target_token_symbol = transfer.get('mint', 'Unknown')[:8]  # 取前8位作为符号
-                
-            elif transfer.get('fromUserAccount') == self.target_wallet:
+                token_change += float(transfer.get('tokenAmount', 0) or 0)
+                target_token_symbol = transfer.get('mint', 'Unknown')[:8]  # 取前8位作为符号␊
+                ␊
+            elif transfer.get('fromUserAccount') == self.target_wallet:␊
                 # 发出 Token -> 卖出
                 target_token_mint = mint
-                token_change = -transfer.get('tokenAmount', 0)
+                token_change -= float(transfer.get('tokenAmount', 0) or 0)
                 target_token_symbol = transfer.get('mint', 'Unknown')[:8]
         
         return token_change, target_token_mint, target_token_symbol
@@ -236,3 +236,4 @@ class SignalParser:
 
 # 便捷导出
 __all__ = ['SignalParser']
+
