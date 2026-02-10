@@ -126,8 +126,6 @@ class ExecutionResult:
     # 时间戳
     timestamp: int             # 执行时间戳
     
-    realized_pnl: float = 0.0
-    error_message: str = ""
     # 可选字段
     error_message: Optional[str] = None  # 失败原因
     realized_pnl: Optional[float] = None  # 实现盈亏（卖出时）
