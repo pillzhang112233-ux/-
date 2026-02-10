@@ -280,7 +280,7 @@ class JsonStorage:
             
             # 添加时间戳和ID
             trade_data['saved_at'] = time.strftime("%Y-%m-%d %H:%M:%S")
-            trade_data['trade_id'] = f"{trade_data.get('timestamp', int(time.time()))}_{len(trades)}"
+            trade_data.setdefault('trade_id', f"{int(time.time())}_{len(trades)}")
             
             # 追加新记录
             trades.append(trade_data)
@@ -351,8 +351,8 @@ class JsonStorage:
                 'sell_trades': 0,
             }
         
-        buy_count = sum(1 for t in trades if t.get('action') == 'BUY')
-        sell_count = sum(1 for t in trades if t.get('action') == 'SELL')
+        buy_count = sum(1 for t in trades if t.get('basic_info', {}).get('action') == 'BUY')
+        sell_count = sum(1 for t in trades if t.get('basic_info', {}).get('action') == 'SELL')
         
         return {
             'total_trades': len(trades),
